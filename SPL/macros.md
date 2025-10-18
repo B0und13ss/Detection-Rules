@@ -1,10 +1,12 @@
-`search_range`
 ```SPL
+`search_range`
+
 _index_earliest=-15m AND _index_latest=now
 ```
 
-`enrich`
 ```SPL
+`enrich`
+
 | eval enrichment = mvjoin(mvappend("Trigger=".hunting_trigger,
                                     "MITRE Category=".mitre_category, 
                                     "MITRE Technique=".mitre_technique . ":" . mitre_subtechnique, 
@@ -20,8 +22,9 @@ _index_earliest=-15m AND _index_latest=now
 ")
 ```
 
-`give_time`
 ```SPL
+`give_time`
+
 | eval indextime = _indextime
 | convert ctime(indextime)
 ```
