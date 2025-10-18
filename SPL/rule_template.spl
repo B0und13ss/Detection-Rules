@@ -1,3 +1,4 @@
+```SPL
 `search_range`
 <<<<<<<PUT SEACH HERE>>>>>>>>
 | eval hunting_trigger="mitre-detection-strategy",
@@ -16,3 +17,4 @@ priority="criticality"
 `enrich`
 `give_time`
 | collect index="collection_index" source="source" sourcetype="sourcetype"
+```
