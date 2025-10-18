@@ -16,21 +16,6 @@ upload_date="2025-10-18",
 last_modify_date="2025-10-18",
 last_tested="yyyy-mm-dd",
 priority="Critical"
-| eval enrichment = mvjoin(mvappend("Trigger=".hunting_trigger,
-                                    "MITRE Category=".mitre_category, 
-                                    "MITRE Technique=".mitre_technique . ":" . mitre_subtechnique, 
-                                    "MITRE Code=".mitre_technique_id . "." . mitre_subtechnique_id, 
-                                    "Ref=".mitre_link, 
-                                    "Ver=".mitre_version, 
-                                    "Author=".creator, 
-                                    "Upload=".upload_date, 
-                                    "Modify=".last_modify_date, 
-                                    "Tested=".last_tested, 
-                                    "Priority=".priority), "
-")
-| eval _raw = mvjoin(mvappend(enrichment, "___________________________________________________", "", _raw), "
-")
-| eval indextime = _indextime
-| convert ctime(indextime)
-| table `table_sysmon`, `table_powershell`
-| collect `jarvis_index`
+`enrich`
+`give_time`
+| collect index=alerts sourcetype=WinEventLog
