@@ -1,0 +1,27 @@
+| eval hunting_trigger="mitre-detection-strategy",
+mitre_category="category",
+mitre_technique="technique",
+mitre_technique_id="Txxxx",
+mitre_subtechnique="subtechnique", 
+mitre_subtechnique_id="xxx",
+mitre_link="link-to-mitre-tcode",
+mitre_version="v17",
+creator="your-name-here",
+upload_date="yyyy-mm-dd",
+last_modify_date="yyyy-mm-dd",
+last_tested="yyyy-mm-dd",
+priority="criticality"
+| eval enrichment = mvjoin(mvappend("Trigger=".hunting_trigger,
+                                    "MITRE Category=".mitre_category, 
+                                    "MITRE Technique=".mitre_technique . ":" . mitre_subtechnique, 
+                                    "MITRE Code=".mitre_technique_id . "." . mitre_subtechnique_id, 
+                                    "Ref=".mitre_link, 
+                                    "Ver=".mitre_version, 
+                                    "Author=".creator, 
+                                    "Upload=".upload_date, 
+                                    "Modify=".last_modify_date, 
+                                    "Tested=".last_tested, 
+                                    "Priority=".priority), "
+")
+| eval _raw = mvjoin(mvappend(enrichment, "___________________________________________________", "", _raw), "
+")
