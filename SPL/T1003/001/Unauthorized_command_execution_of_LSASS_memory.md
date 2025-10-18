@@ -1,5 +1,6 @@
 [MITRE ATT&CK](https://attack.mitre.org/techniques/T1003/001/#uses-DS0017)
 
+```SPL
 `search_range`
 (index=win_sysmon EventCode=1 Image="*powershell.exe" CommandLine IN ("*Invoke-Mimikatz*", "*procdump.exe -ma lsass*", "*rundll32.exe*comsvcs.dll*MiniDump*", "*taskmgr.exe* /dump*")) OR 
 (index=win_powershell EventCode=4104 Message IN ("*Invoke-Mimikatz*", "*procdump.exe -ma lsass*", "*rundll32.exe*comsvcs.dll*MiniDump*", "*taskmgr.exe* /dump*"))
@@ -19,3 +20,4 @@ priority="Critical"
 `enrich`
 `give_time`
 | collect index=alerts sourcetype=WinEventLog
+```
