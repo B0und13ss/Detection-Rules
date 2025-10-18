@@ -25,8 +25,3 @@ _index_earliest=-15m AND _index_latest=now
 | eval indextime = _indextime
 | convert ctime(indextime)
 ```
-
-`collect`
-```SPL
-| collect index="collection_index" source="source" sourcetype="sourcetype"
-```
