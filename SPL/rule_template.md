@@ -1,33 +1,3 @@
-```SPL
-`indextime`
-#
-
-SPL SEARCH HERE
-
-#
-| eval hunting_trigger="", ```why does this alert fire```
-       search_name="", ```copy the title here```
-       mitre_category="none",
-       mitre_technique="none",
-       mitre_subtechnique="none",
-       mitre_technique_id="Txxxx",
-       mitre_subtechnique_id="xxx",
-       mitre_link="none", ```link to the web page / detection strategy```
-       mitre_version="v17",
-       apt=mvappend("", ""), ```apts, keep extra "" if a single value```
-       creator=mvappend("", ""), ```keep extra "" if a single value```
-       upload_date="", ```yyyy-mm-dd```
-       last_modify_date="",
-       last_tested="",
-       priority="Low", ```Low/Medium/High/Critical```
-       orig_index=index,
-       orig_host=host
-`rule_enrich`
-`populate_jarvis`
-```
-
----
-
 # FOR NEW APP ON OWN TIME
 
 ## Search
