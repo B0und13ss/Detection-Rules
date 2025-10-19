@@ -20,11 +20,14 @@ _index_earliest=-15m AND _index_latest=now
                                     "Priority=".priority), "
 "), eval _raw = mvjoin(mvappend(enrichment, "___________________________________________________", "", _raw), "
 ")
+| eval indextime = _indextime
+| convert ctime(indextime)
 ```
 
 ```SPL
-`give_time`
+`get_rule(1)`
 
-| eval indextime = _indextime
-| convert ctime(indextime)
+| append [| rest /servicesNS/-/-/saved/searches splunk_server=local | where title="$rule_name$" | eval _raw = mvjoin(mvappend("TITLE:", title, "", "DESCRIPTION:" ,if(description="", "NO DESCRIPTION FOUND", description), "", "RULE:", search), " ") ]
+
+rule_name
 ```
