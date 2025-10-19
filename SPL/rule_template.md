@@ -1,57 +1,101 @@
 ```SPL
-`search_range`
-<<<<<<<PUT SEACH HERE>>>>>>>>
-| eval hunting_trigger="mitre-detection-strategy",
-mitre_category="category",
-mitre_technique="technique",
-mitre_technique_id="Txxxx",
-mitre_subtechnique="subtechnique", 
-mitre_subtechnique_id="xxx",
-mitre_link="link-to-mitre-tcode",
-mitre_version="v17",
-creator="your-name-here",
-upload_date="yyyy-mm-dd",
-last_modify_date="yyyy-mm-dd",
-last_tested="yyyy-mm-dd",
-priority="criticality"
-`enrich`
-`give_time`
-| collect index="collection_index" source="source" sourcetype="sourcetype"
-```
+`indextime`
+#
 
-FOR NEW APP ON OWN TIME
-```SPL
-index=win_security
-| head 1
-| eval hunting_trigger="THIS IS ANOTHER TEST",
-       search_name="TEST PART 2",
-       mitre_category="Credential_Access",
-       mitre_technique="OS Credential Dumping",
-       mitre_technique_id="T1003",
-       mitre_subtechnique="LSASS Memory", 
-       mitre_subtechnique_id="001",
-       mitre_link="https://attack.mitre.org/techniques/T1003/001/#uses-DS0017",
+SPL SEARCH HERE
+
+#
+| eval hunting_trigger="", ```why does this alert fire```
+       search_name="", ```copy the title here```
+       mitre_category="none",
+       mitre_technique="none",
+       mitre_subtechnique="none",
+       mitre_technique_id="Txxxx",
+       mitre_subtechnique_id="xxx",
+       mitre_link="none", ```link to the web page / detection strategy```
        mitre_version="v17",
-       creator="Cpl Dougherty",
-       upload_date="2025-10-18",
-       last_modify_date="2025-10-18",
-       last_tested="yyyy-mm-dd",
-       priority="Critical",
+       apt=mvappend("", ""), ```apts, keep extra "" if a single value```
+       creator=mvappend("", ""), ```keep extra "" if a single value```
+       upload_date="", ```yyyy-mm-dd```
+       last_modify_date="",
+       last_tested="",
+       priority="Low", ```Low/Medium/High/Critical```
        orig_index=index,
        orig_host=host
+`rule_enrich`
+`populate_jarvis`
+```
+
+---
+
+# FOR NEW APP ON OWN TIME
+
+## Search
+```SPL
+`search_range`
+#
+
+SPL SEARCH HERE
+
+#
+| eval search_name="", ```copy the title here```
+       hunting_trigger="", ```why does this alert fire```
+       mitre_category="",
+       mitre_technique="",
+       mitre_subtechnique="",
+       mitre_technique_id="Txxxx",
+       mitre_subtechnique_id="xxx",
+       mitre_link="", ```link to the web page / detection strategy```
+       mitre_version="",
+       apt=mvappend("", ""), ```apts, keep extra "" if a single value```
+       creator=mvappend("", ""), ```keep extra "" if a single value```
+       upload_date="", ```yyyy-mm-dd```
+       last_modify_date="",
+       last_tested="",
+       priority="", ```Low/Medium/High/Critical```
+       orig_index=index,
+       orig_host=host
+`format`
+`alert`
+```
+
+## Macros
+
+### search_range
+```SPL
+_index_earliest=-10m@m AND _index_latest=now
+```
+
+### format
+```SPL
 | eval enrichment = mvjoin(mvappend("Trigger=".hunting_trigger,
-                                    "MITRE Category=".mitre_category, 
-                                    "MITRE Technique=".mitre_technique . ":" . mitre_subtechnique, 
-                                    "MITRE Code=".mitre_technique_id . "." . mitre_subtechnique_id, 
-                                    "Ref=".mitre_link, 
-                                    "Ver=".mitre_version, 
-                                    "Author=".creator, 
-                                    "Upload=".upload_date, 
-                                    "Modify=".last_modify_date, 
-                                    "Tested=".last_tested, 
-                                    "Priority=".priority), "
-"), _raw = mvjoin(mvappend(enrichment, "___________________________________________________", "", _raw), "
-"), indextime = _indextime 
-| convert ctime(indextime) 
-| collect index=jarvis output_format=hec
+                                    "Category: ".mitre_category, 
+                                    "Technique: ".mitre_technique . ":" . mitre_subtechnique, 
+                                    "Code: ".mitre_technique_id . "." . mitre_subtechnique_id, 
+                                    "Ref: ".mitre_link, 
+                                    "Ver: ".mitre_version,
+                                    "APT(s): ".mvjoin(apt, ", "),
+                                    "Author: ".mvjoin(creator, ", "), 
+                                    "Upload: ".upload_date, 
+                                    "Modify: ".last_modify_date, 
+                                    "Tested: ".last_tested, 
+                                    "Priority: ".priority), "
+"), _raw = mvjoin(mvappend("___________________________________________________",
+                           "|                   ALERT DATA                    |",
+                           "|_________________________________________________|",
+                           "",
+                           enrichment,
+                           "",
+                           "___________________________________________________",
+                           "|                      EVENT                      |",
+                           "|_________________________________________________|",
+                           "",
+                           _raw),
+                           "
+")
+```
+
+### alert
+```SPL
+| collect index=alerts output_format=hec
 ```
