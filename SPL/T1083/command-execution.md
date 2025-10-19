@@ -2,7 +2,8 @@
 
 ```SPL
 `indextime`
-index=win_security EventCode=4688 Process_Command_Line IN ("*ls*", "*dir*", "*tree*", "*locate*", "*forfiles*") Creator_Process_Name IN ("*powershell.exe*", "*cmd.exe*", "*bash*") NOT Process_Command_Line IN ("*csc.exe*", "*reg*", "*appcmd.exe*", "*mcafee*", "*.jar*", "*$sidString*", "*Win32_Service*", "*repadmin*", "*VMwareToolboxCmd.exe*", "*ping*", "*worldwinddata*", "*chrome.exe*", "*Windows Defender Advanced Threat Protection*", "*sysconfdir*", "*CCM_SoftwareUpdatesClientConfig*", "*keytool.exe*")
+(index=win_security EventCode=4688 Process_Command_Line IN ("*ls*", "*dir*", "*tree*", "*locate*", "*forfiles*") Creator_Process_Name IN ("*powershell.exe*", "*cmd.exe*", "*bash*") NOT Process_Command_Line IN ("*csc.exe*", "*reg*", "*appcmd.exe*", "*mcafee*", "*.jar*", "*$sidString*", "*Win32_Service*", "*repadmin*", "*VMwareToolboxCmd.exe*", "*ping*", "*worldwinddata*", "*chrome.exe*", "*Windows Defender Advanced Threat Protection*", "*sysconfdir*", "*CCM_SoftwareUpdatesClientConfig*", "*keytool.exe*", "*expr.exe*", "*cp.exe*")) OR
+(index=win_sysmon EventCode=1 Image IN ("*ls*", "*dir*", "*tree*", "*locate*", "*forfiles*") ParentImage IN ("*powershell.exe*", "*cmd.exe*", "*bash*") NOT Image IN ("*VMwareToolboxCmd.exe*"))
 | eval hunting_trigger="Executed commands and arguments that may enumerate files and directories or may search in specific locations of a host or network share for certain information within a file system.",
        mitre_category="Discovery",
        mitre_technique="File and Directory Discovery",
